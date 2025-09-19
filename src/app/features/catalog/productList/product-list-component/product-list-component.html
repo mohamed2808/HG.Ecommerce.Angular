@@ -1,0 +1,13 @@
+<div *ngIf="loading$">Loading products…</div>
+<div *ngIf="error$ as err" class="text-red-600">{{ err }}</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+  <ng-container *ngIf="products$ | async as products">
+    <div *ngFor="let p of products" class="border p-4 rounded">
+      <img [src]="p.imagePath || 'assets/no-image.png'" class="w-full h-40 object-cover mb-2" alt="{{p.name}}">
+      <h3 class="font-semibold">{{ p.name }}</h3>
+      <p class="text-sm">{{ p.description }}</p>
+      <div class="mt-2 font-bold">{{ p.price | currency }}</div>
+    </div>
+  </ng-container>
+</div>

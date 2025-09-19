@@ -1,0 +1,50 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form"
+        class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 space-y-6">
+    
+    <h2 class="text-2xl font-bold text-gray-800 text-center">Login to Your Account</h2>
+    
+    <!-- Email -->
+    <div>
+      <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Email</label>
+      <input id="email" formControlName="email" type="email"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             placeholder="you@example.com">
+      <div *ngIf="form.controls.email.touched && form.controls.email.invalid"
+           class="text-sm text-red-600 mt-1">
+        Email is required and must be valid.
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Password</label>
+      <input id="password" formControlName="password" type="password"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+             placeholder="••••••••">
+      <div *ngIf="form.controls.password.touched && form.controls.password.invalid"
+           class="text-sm text-red-600 mt-1">
+        Password is required (min 6).
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="text-sm text-red-600 text-center">
+      {{ error }}
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit"
+            [disabled]="loading"
+            class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+      {{ loading ? 'Signing in...' : 'Sign in' }}
+    </button>
+
+    <!-- Optional Links -->
+    <div class="flex justify-between text-sm text-gray-500">
+      <a href="#" class="hover:underline">Forgot password?</a>
+      <a href="#" class="hover:underline">Sign up</a>
+    </div>
+
+  </form>
+</div>
