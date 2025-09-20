@@ -1,4 +1,4 @@
 export interface AuthResponse {
-     token: string;
-     expiresAt?: string; 
+     accessToken: string;
+     refreshToken?: string; 
     }

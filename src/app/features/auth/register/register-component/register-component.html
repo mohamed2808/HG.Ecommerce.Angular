@@ -1,13 +1,79 @@
-<h2>Register</h2>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <label>Full Name</label>
-  <input formControlName="fullName" type="text"/>
-  <label>Email</label>
-  <input formControlName="email" type="email"/>
-  <label>Password</label>
-  <input formControlName="password" type="password"/>
-  <div *ngIf="error" class="text-red">{{ error }}</div>
-  <button type="submit" [disabled]="loading">
-    {{ loading ? 'Registering…' : 'Register' }}
-  </button>
-</form>
+<div class="d-flex align-items-center justify-content-center vh-100 bg-light">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="w-100" style="max-width: 500px;" novalidate>
+    <div class="card shadow-lg rounded">
+      <div class="card-body p-4">
+
+        <h2 class="h4 text-center mb-4 text-dark fw-bold">Create Your Account</h2>
+
+        <div class="mb-3">
+          <label for="fullName" class="form-label">Full Name</label>
+          <input id="fullName" formControlName="fullName" type="text" class="form-control" placeholder="Enter Your Name">
+          <div *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid" class="text-danger small mt-1">
+            Full name is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="phoneNumber" class="form-label">Phone Number</label>
+          <input id="phoneNumber" formControlName="phoneNumber" type="text" class="form-control" placeholder="Enter Your Phone">
+          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid" class="text-danger small mt-1">
+            Phone number is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" formControlName="email" type="email" class="form-control" placeholder="Enter Your Email">
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="text-danger small mt-1">
+            Enter a valid email.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" formControlName="password" type="password" class="form-control" placeholder="••••••••">
+          <div *ngIf="form.get('password')?.touched && form.get('password')?.errors?.['required']" class="text-danger small mt-1">
+            Password is required.
+          </div>
+          <div *ngIf="form.get('password')?.touched && form.get('password')?.errors?.['minlength']" class="text-danger small mt-1">
+            Password must be at least 6 characters.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <input id="confirmPassword" formControlName="confirmPassword" type="password" class="form-control" placeholder="••••••••">
+          <div *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.invalid" class="text-danger small mt-1">
+            Confirm your password.
+          </div>
+          <div *ngIf="form.errors?.['passwordMismatch']" class="text-danger small mt-1">
+            Passwords do not match.
+          </div>
+        </div>
+
+        <div class="form-check mb-3">
+          <input id="terms" type="checkbox" class="form-check-input" formControlName="terms">
+          <label for="terms" class="form-check-label">
+            I agree to the <a href="#" class="text-decoration-none">terms and conditions</a>
+          </label>
+          <div *ngIf="form.get('terms')?.touched && form.get('terms')?.invalid" class="text-danger small mt-1">
+            You must accept the terms.
+          </div>
+        </div>
+
+        <div *ngIf="error" class="text-danger text-center small mb-3">
+          {{ error }}
+        </div>
+
+        <button type="submit" [disabled]="loading || form.invalid" class="btn btn-primary w-100">
+          {{ loading ? 'Registering...' : 'Register' }}
+        </button>
+
+        <div class="text-center mt-3">
+          Already have an account? <a routerLink="/auth/login" class="text-decoration-none">Sign in</a>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</div>

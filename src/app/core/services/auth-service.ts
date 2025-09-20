@@ -1,5 +1,5 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { LoginDto } from '../models/login-dto';
@@ -9,39 +9,43 @@ import { RegisterDto } from '../models/register-dto';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private tokenKey = 'hg_token';
-  private _isAuthenticated$!: BehaviorSubject<boolean>;
+  private baseUrl = 'https://hgecommerce.runasp.net/api/Auth';
+  private _isAuthenticated$ = new BehaviorSubject<boolean>(false); 
 
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    const token = this.isBrowser() ? localStorage.getItem(this.tokenKey) : null;
-    this._isAuthenticated$ = new BehaviorSubject<boolean>(!!token);
+    if (this.isBrowser()) {
+      const token = localStorage.getItem(this.tokenKey);
+      this._isAuthenticated$.next(!!token);
+    }
   }
 
-  login(dto: LoginDto) {
+  login(dto: LoginDto): Observable<AuthResponse> {
+    const params = new HttpParams()
+      .set('email', dto.email)
+      .set('password', dto.password);
+
     return this.http.post<AuthResponse>(
-      `https://hgecommerce.runasp.net/auth/login`,
-      dto
+      `${this.baseUrl}/login`,
+      {},
+      { params }
     ).pipe(
       tap(res => this.handleAuth(res))
     );
   }
 
-  register(dto: RegisterDto) {
-    return this.http.post<AuthResponse>(
-      `https://hgecommerce.runasp.net/auth/register`,
-      dto
-    ).pipe(
-      tap(res => this.handleAuth(res))
-    );
+  register(dto: RegisterDto): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, dto)
+      .pipe(tap(res => this.handleAuth(res)));
   }
 
-  logout() {
+  logout(): void {
     if (this.isBrowser()) {
       localStorage.removeItem(this.tokenKey);
     }
-    this._isAuthenticated$.next(false);
+    this._isAuthenticated$.next(false); 
   }
 
   getToken(): string | null {
@@ -52,11 +56,16 @@ export class AuthService {
     return this._isAuthenticated$.asObservable();
   }
 
-  private handleAuth(res: AuthResponse) {
-    if (this.isBrowser()) {
-      localStorage.setItem(this.tokenKey, res.token);
+  private handleAuth(res: AuthResponse): void {
+    if (!this.isBrowser()) return;
+
+    const token = res.accessToken || (res as any).token;
+    if (token) {
+      localStorage.setItem(this.tokenKey, token);
+      this._isAuthenticated$.next(true);
+    } else {
+      this._isAuthenticated$.next(false);
     }
-    this._isAuthenticated$.next(true);
   }
 
   private isBrowser(): boolean {
