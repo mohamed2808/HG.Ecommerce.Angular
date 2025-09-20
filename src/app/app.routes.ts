@@ -9,11 +9,6 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'products', component: ProductListComponent },
   {
-    path: 'products/:id',
-    component: ProductDetailsComponent,
-    data: { renderMode: 'client' } // ← هذه السطر يحول الصفحة لـ CSR
-  },
-  {
     path: 'auth',
     children: [
       { path: 'login', component: LoginComponent },
